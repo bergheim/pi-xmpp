@@ -18,7 +18,6 @@ import {
     userText,
     type ChatState,
 } from "./lib.ts";
-import { expandSkillHits, loadSkills } from "../inline-skills/index.ts";
 import { NS, Omemo, type XmppIq } from "./omemo.ts";
 
 // @xmpp/client 0.13 picks SCRAM-SHA-1 first; this ejabberd rejects the response.
@@ -99,7 +98,7 @@ export default function (pi: PhonePi) {
     let omemo: Omemo | undefined;
     let peer: string | undefined;
     let allow = DEFAULT_ALLOW;
-    let lastFromPhone: string | undefined;
+    let pendingFromPhone = 0;
     let injectTail: Promise<void> = Promise.resolve();
     let runId = 0;
 
@@ -298,13 +297,6 @@ export default function (pi: PhonePi) {
                         return;
                     }
                     peer = from;
-                    const text = body.includes("$")
-                        ? expandSkillHits(
-                              body,
-                              loadSkills(pi.getCommands() as never),
-                          )
-                        : body;
-                    lastFromPhone = text;
                     const id = runId;
                     injectTail = injectTail
                         .then(async () => {
@@ -323,7 +315,8 @@ export default function (pi: PhonePi) {
                             if (id !== runId || !xmpp) return;
                             await sendState(from, "composing");
                             if (id !== runId || !xmpp) return;
-                            pi.sendUserMessage(text);
+                            pendingFromPhone++;
+                            pi.sendUserMessage(body);
                         })
                         .catch((err: unknown) => {
                             const msg =
@@ -436,8 +429,8 @@ export default function (pi: PhonePi) {
         if (!message) return;
         const incoming = userText(message);
         if (incoming) {
-            if (incoming === lastFromPhone) {
-                lastFromPhone = undefined;
+            if (pendingFromPhone > 0) {
+                pendingFromPhone--;
                 return;
             }
             try {
