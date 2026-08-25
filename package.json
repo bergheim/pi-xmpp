@@ -1,0 +1,22 @@
+{
+    "name": "pi-xmpp",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "description": "Relay a pi TUI session over OMEMO XMPP",
+    "keywords": ["pi-package", "pi-extension"],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/bergheim/pi-xmpp.git"
+    },
+    "pi": {
+        "extensions": ["./index.ts"]
+    },
+    "dependencies": {
+        "@xmpp/client": "^0.13.6",
+        "libomemo.js": "^3.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^24.5.2"
+    }
+}

@@ -1,0 +1,29 @@
+#+title: pi-xmpp
+
+Relay a pi TUI session over OMEMO XMPP. No plaintext send.
+
+* Install
+
+Add =git:github.com/bergheim/pi-xmpp= to =packages= in
+=~/.pi/agent/settings.json=, then:
+
+#+begin_src sh
+pi install
+#+end_src
+
+* Commands
+
+- =/phone= — connect
+- =/phone off= — disconnect
+
+* Config
+
+| Variable           | Default                          |
+|--------------------+----------------------------------|
+| =PI_XMPP_JID=      | =pi@example.org=           |
+| =PI_XMPP_PASSWORD= | required                         |
+| =PI_XMPP_ALLOW=    | =user@example.org=          |
+| =PI_XMPP_SERVICE=  | =xmpps://<jid-domain>:5223=      |
+| =PI_OMEMO_STORE=   | =~/.pi/agent/phone-omemo.json=   |
+
+Only the allowlisted JID can talk to the session.
