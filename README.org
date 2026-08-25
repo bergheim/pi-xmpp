@@ -20,9 +20,9 @@ pi install
 
 | Variable           | Default                          |
 |--------------------+----------------------------------|
-| =PI_XMPP_JID=      | =pi@example.org=           |
+| =PI_XMPP_JID=      | required                         |
 | =PI_XMPP_PASSWORD= | required                         |
-| =PI_XMPP_ALLOW=    | =user@example.org=          |
+| =PI_XMPP_ALLOW=    | required                         |
 | =PI_XMPP_SERVICE=  | =xmpps://<jid-domain>:5223=      |
 | =PI_OMEMO_STORE=   | =~/.pi/agent/phone-omemo.json=   |
 

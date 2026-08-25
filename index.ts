@@ -43,9 +43,6 @@ function preferPlainSasl(): void {
 }
 preferPlainSasl();
 
-const DEFAULT_JID = "pi@example.org";
-const DEFAULT_ALLOW = "user@example.org";
-
 function xmppPassword(jid: string): string | undefined {
     const env = process.env.PI_XMPP_PASSWORD;
     if (env) return env;
@@ -97,7 +94,7 @@ export default function (pi: PhonePi) {
     let xmpp: XmppClient | undefined;
     let omemo: Omemo | undefined;
     let peer: string | undefined;
-    let allow = DEFAULT_ALLOW;
+    let allow = "";
     let pendingFromPhone = 0;
     let injectTail: Promise<void> = Promise.resolve();
     let runId = 0;
@@ -149,11 +146,15 @@ export default function (pi: PhonePi) {
             return;
         }
 
-        const jid = process.env.PI_XMPP_JID ?? DEFAULT_JID;
-        allow = process.env.PI_XMPP_ALLOW ?? DEFAULT_ALLOW;
+        const jid = process.env.PI_XMPP_JID;
+        allow = process.env.PI_XMPP_ALLOW ?? "";
+        if (!jid || !allow) {
+            ctx.ui.notify("PI_XMPP_JID and PI_XMPP_ALLOW unset", "error");
+            return;
+        }
         const password =
             xmppPassword(jid) ??
-            (await ctx.ui.input("XMPP password for pi@", ""));
+            (await ctx.ui.input(`XMPP password for ${jid}`, ""));
         if (!password) {
             ctx.ui.notify("PI_XMPP_PASSWORD unset", "error");
             return;
